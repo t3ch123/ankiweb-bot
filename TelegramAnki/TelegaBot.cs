@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace TelegramAnki
@@ -15,15 +17,15 @@ namespace TelegramAnki
         private const string text3 = "Good";
         private const string text4 = "Easy";
         private string _token;
-        Telegram.Bot.TelegramBotClient _client;
+        TelegramBotClient _client;
 
         public TelegaBot(string token)
         {
             this._token = token;
+            this._client = new TelegramBotClient(_token);
         }
         internal void GetUpdates()
         {
-            _client = new Telegram.Bot.TelegramBotClient(_token);
             var me = _client.GetMeAsync().Result;
             if (me != null && !string.IsNullOrEmpty(me.Username))
             {
@@ -52,9 +54,13 @@ namespace TelegramAnki
         {
             switch (update.Type)
             {
-                case Telegram.Bot.Types.Enums.UpdateType.Message:
-                    var text = update.Message.Text;
-                    _client.SendTextMessageAsync(update.Message.Chat.Id, "Receive text:" + text, replyMarkup: GetButtons());
+                case UpdateType.Message:
+                    Message? message = update.Message;
+                    if (message == null)
+                    {
+                        break;
+                    }
+                    _client.SendTextMessageAsync(message.Chat.Id, "Receive text:" + message.Text, replyMarkup: GetButtons());
                     break;
                 default:
                     Console.WriteLine(update.Type + "Not implemented");
