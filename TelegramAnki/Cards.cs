@@ -8,7 +8,7 @@ namespace TelegramAnki
 {
     public class Cards
     {
-        public string QuestionText { get; private set; }
-        public string AnswerText { get; private set; }
+        public string QuestionText { get; private set; } = "";
+        public string AnswerText { get; private set; } = "";
     }
 }
