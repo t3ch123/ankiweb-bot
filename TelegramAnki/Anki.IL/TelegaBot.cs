@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Telegram.Bot;
+﻿using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -16,8 +11,8 @@ namespace Anki.IL
         private const string text2 = "Hard";
         private const string text3 = "Good";
         private const string text4 = "Easy";
-        private string _token;
-        TelegramBotClient _client;
+        private readonly string _token;
+        readonly TelegramBotClient _client;
 
         public TelegaBot(string token)
         {
@@ -35,7 +30,7 @@ namespace Anki.IL
                     try
                     {
                         var updates = _client.GetUpdatesAsync(offset).Result;
-                        if (updates != null && updates.Count() > 0)
+                        if (updates != null && updates.Length > 0)
                         {
                             foreach (var update in updates)
                             {
@@ -50,7 +45,7 @@ namespace Anki.IL
                 }
             }
         }
-        private void ProcessUpdate(Telegram.Bot.Types.Update update)
+        private void ProcessUpdate(Update update)
         {
             switch (update.Type)
             {
