@@ -24,7 +24,7 @@ namespace Anki.IL
             this._token = token;
             this._client = new TelegramBotClient(_token);
         }
-        internal void GetUpdates()
+        public void GetUpdates()
         {
             var me = _client.GetMeAsync().Result;
             if (me != null && !string.IsNullOrEmpty(me.Username))

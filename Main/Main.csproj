@@ -7,4 +7,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TelegramAnki\Anki.IL\Anki.IL.csproj" />
+  </ItemGroup>
+
 </Project>
