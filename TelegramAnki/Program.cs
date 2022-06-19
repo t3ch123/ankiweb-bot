@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Anki.IL;
 
-namespace TelegramAnki
+namespace Main
 {
     class Program
     {
@@ -14,7 +15,7 @@ namespace TelegramAnki
             try
             {
                 System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
-                TelegaBot telegaBot = new TelegaBot(token: SECRET_TOKEN);
+                TelegaBot telegaBot = new(token: SECRET_TOKEN);
                 telegaBot.GetUpdates();
             }
             catch (Exception ex) { Console.WriteLine(ex.Message); }

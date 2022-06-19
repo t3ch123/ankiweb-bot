@@ -8,9 +8,9 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace TelegramAnki
+namespace Anki.IL
 {
-    internal class TelegaBot
+    public class TelegaBot
     {
         private const string text1 = "Again";
         private const string text2 = "Hard";
@@ -39,7 +39,7 @@ namespace TelegramAnki
                         {
                             foreach (var update in updates)
                             {
-                                processUpdate(update);
+                                ProcessUpdate(update);
                                 offset = update.Id + 1;
                             }
                         }
@@ -50,7 +50,7 @@ namespace TelegramAnki
                 }
             }
         }
-        private void processUpdate(Telegram.Bot.Types.Update update)
+        private void ProcessUpdate(Telegram.Bot.Types.Update update)
         {
             switch (update.Type)
             {
@@ -60,17 +60,19 @@ namespace TelegramAnki
                     {
                         break;
                     }
-                    _client.SendTextMessageAsync(message.Chat.Id, "Receive text:" + message.Text, replyMarkup: GetButtons());
+                    _client.SendTextMessageAsync(message.Chat.Id, "Receive text:" + message.Text, replyMarkup: Buttons);
                     break;
                 default:
                     Console.WriteLine(update.Type + "Not implemented");
                     break;
             }
         }
-        private IReplyMarkup GetButtons()
+        private static IReplyMarkup Buttons
         {
-            ReplyKeyboardMarkup rkm = new ReplyKeyboardMarkup(new[]
+            get
             {
+                ReplyKeyboardMarkup rkm = new(new[]
+                {
                 new[]
                 {
                     new KeyboardButton(text1),
@@ -78,9 +80,12 @@ namespace TelegramAnki
                     new KeyboardButton(text3),
                     new KeyboardButton(text4),
                 }
-            });
-            rkm.ResizeKeyboard = true;
-            return rkm;
+            })
+                {
+                    ResizeKeyboard = true
+                };
+                return rkm;
+            }
         }
     }
 }
