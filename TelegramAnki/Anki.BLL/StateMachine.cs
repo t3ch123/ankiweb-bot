@@ -1,3 +1,8 @@
+using Anki.BLL;
+using Anki.DAL.DTOs;
+using Anki.DAL.Managers;
+using TelegramAnki.User;
+
 namespace StateMachine
 {
     public enum BotState
@@ -28,22 +33,24 @@ namespace StateMachine
                 Command = command;
             }
 
-            public override int GetHashCode()
-            {
-                return 17 + 31 * CurrentState.GetHashCode() + 31 * Command.GetHashCode();
-            }
+            public override int GetHashCode() => 17 + 31 * CurrentState.GetHashCode() + 31 * Command.GetHashCode();
 
-            public override bool Equals(object obj)
+            public override bool Equals(Object? obj)
             {
-                StateTransition other = obj as StateTransition;
-                return other != null && this.CurrentState == other.CurrentState && this.Command == other.Command;
+                if (obj is StateTransition other)
+                {
+                    return this.CurrentState == other.CurrentState && this.Command == other.Command;
+                }
+                return false;
             }
         }
 
-        readonly Dictionary<StateTransition, BotState> transitions;
+        private readonly Dictionary<StateTransition, BotState> transitions;
         public BotState CurrentState { get; private set; }
 
-        public Bot()
+        private readonly Controller controller;
+
+        public Bot(Controller controller)
         {
             CurrentState = BotState.Initial;
             transitions = new Dictionary<StateTransition, BotState>
@@ -53,19 +60,29 @@ namespace StateMachine
                 { new StateTransition(BotState.LoggedIn, Command.ViewDecks), BotState.LoggedIn },
                 { new StateTransition(BotState.LoggedIn, Command.SearchCards), BotState.LoggedIn },
             };
+            this.controller = controller;
+        }
+        public BotState GetNext(int ChatID, Command command)
+        {
+            UserDTO user = UserManager.GetUser(ChatID);
+            StateTransition stateTransition = new(
+                currentState: (BotState)user.State,
+                command: command
+            );
+            CurrentState = transitions[stateTransition];
+            return CurrentState;
         }
 
-        public BotState GetNext(Command command)
+        public BotState MoveNext(int ChatID, Command command)
         {
-            StateTransition transition = new(CurrentState, command);
-            if (!transitions.TryGetValue(transition, out BotState nextState))
-                throw new Exception("Invalid transition: " + CurrentState + " -> " + command);
-            return nextState;
-        }
-
-        public BotState MoveNext(Command command)
-        {
-            CurrentState = GetNext(command);
+            User user = controller.GetUser(ChatID);
+            StateTransition stateTransition = new(
+                currentState: (BotState)user.State,
+                command: command
+            );
+            CurrentState = transitions[stateTransition];
+            user.State = (int)CurrentState;
+            controller.UpdateUser(user);
             return CurrentState;
         }
     }
