@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anki.DAL", "TelegramAnki\An
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anki.IL", "TelegramAnki\Anki.IL\Anki.IL.csproj", "{2818F2CE-81C6-4C0B-9567-FF6DED30FE29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Main", "Main\Main.csproj", "{AF218A3C-B6A8-4968-8CA5-0185D5D4F293}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Main", "Main\Main.csproj", "{AF218A3C-B6A8-4968-8CA5-0185D5D4F293}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Database", "Database\Database.sqlproj", "{456239B5-D8B2-4369-8C4E-6A5D733C641B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,12 @@ Global
 		{AF218A3C-B6A8-4968-8CA5-0185D5D4F293}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF218A3C-B6A8-4968-8CA5-0185D5D4F293}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF218A3C-B6A8-4968-8CA5-0185D5D4F293}.Release|Any CPU.Build.0 = Release|Any CPU
+		{456239B5-D8B2-4369-8C4E-6A5D733C641B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{456239B5-D8B2-4369-8C4E-6A5D733C641B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{456239B5-D8B2-4369-8C4E-6A5D733C641B}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{456239B5-D8B2-4369-8C4E-6A5D733C641B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{456239B5-D8B2-4369-8C4E-6A5D733C641B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{456239B5-D8B2-4369-8C4E-6A5D733C641B}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
