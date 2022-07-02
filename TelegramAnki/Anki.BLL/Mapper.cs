@@ -8,7 +8,8 @@ namespace Anki.BLL
     {
         public MapperProfile()
         {
-            CreateMap<UserDTO, User>();
+            CreateMap<UserDTO, TelegramUser>();
+            CreateMap<TelegramUser, UserDTO>();
         }
     }
 }

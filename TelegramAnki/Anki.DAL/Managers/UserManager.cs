@@ -25,14 +25,48 @@ namespace Anki.DAL.Managers
             };
         }
 
-        public UserDTO GetUser(int ChatID)
+        public UserDTO GetUser(long ChatID)
         {
-            return new() { ChatID = ChatID, Cookie = "", State = 0 };
+            using (var connection = new NpgsqlConnection(PgConnectionString))
+            {
+                return connection.QuerySingle<UserDTO>(
+                    "SELECT * FROM \"User\" WHERE ChatId = @ChatId",
+                    param: new { ChatId = ChatID }
+                );
+            };
+        }
+
+        public bool UserExists(long ChatID)
+        {
+            using (var connection = new NpgsqlConnection(PgConnectionString))
+            {
+                return connection.QuerySingle<bool>(
+                    "SELECT COUNT(1) FROM \"User\" WHERE ChatId = @ChatId",
+                    param: new { ChatId = ChatID }
+                );
+            }
         }
 
         public void UpdateUser(UserDTO user)
         {
-            // todo:
+            using (var connection = new NpgsqlConnection(PgConnectionString))
+            {
+                connection.Execute(
+                    "UPDATE \"User\" SET Cookie = @Cookie, State = @State WHERE ChatId = @ChatId",
+                    param: new { ChatId = user.ChatID, Cookie = user.Cookie, State = user.State }
+                );
+            }
+        }
+
+        public void CreateUser(UserDTO user)
+        {
+            using (var connection = new NpgsqlConnection(PgConnectionString))
+            {
+                connection.Execute(
+                    "INSERT INTO \"User\" VALUES (@ChatId, @Cookie, @State)",
+                    param: new { ChatId = user.ChatID, Cookie = user.Cookie, State = user.State }
+                );
+            }
         }
     }
 }

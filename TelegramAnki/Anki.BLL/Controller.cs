@@ -20,22 +20,32 @@ namespace Anki.BLL
             userManager = new UserManager(settings: settings);
         }
 
-        public List<User> GetUsers()
+        public List<TelegramUser> GetUsers()
         {
             List<UserDTO> users = userManager.GetUsers();
-            return mapper.Map<List<UserDTO>, List<User>>(users);
+            return mapper.Map<List<UserDTO>, List<TelegramUser>>(users);
         }
 
-        public User GetUser(int ChatID)
+        public TelegramUser GetUser(long ChatID)
         {
             UserDTO user = userManager.GetUser(ChatID);
-            return mapper.Map<UserDTO, User>(user);
+            return mapper.Map<UserDTO, TelegramUser>(user);
         }
 
-        public void UpdateUser(User user)
+        public bool UserExists(long ChatID)
         {
-            UserDTO userDTO = mapper.Map<User, UserDTO>(user);
+            return userManager.UserExists(ChatID);
+        }
+
+        public void UpdateUser(TelegramUser user)
+        {
+            UserDTO userDTO = mapper.Map<TelegramUser, UserDTO>(user);
             userManager.UpdateUser(userDTO);
+        }
+        public void CreateUser(TelegramUser user)
+        {
+            UserDTO userDTO = mapper.Map<TelegramUser, UserDTO>(user);
+            userManager.CreateUser(userDTO);
         }
     }
 }

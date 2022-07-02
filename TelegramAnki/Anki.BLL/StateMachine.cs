@@ -39,7 +39,7 @@ namespace StateMachine
             {
                 if (obj is StateTransition other)
                 {
-                    return this.CurrentState == other.CurrentState && this.Command == other.Command;
+                    return CurrentState == other.CurrentState && Command == other.Command;
                 }
                 return false;
             }
@@ -59,12 +59,13 @@ namespace StateMachine
                 { new StateTransition(BotState.WaitingForLogin, Command.Login), BotState.LoggedIn },
                 { new StateTransition(BotState.LoggedIn, Command.ViewDecks), BotState.LoggedIn },
                 { new StateTransition(BotState.LoggedIn, Command.SearchCards), BotState.LoggedIn },
+                { new StateTransition(BotState.LoggedIn, Command.Start), BotState.Initial },
             };
             this.controller = controller;
         }
-        public BotState GetNext(int ChatID, Command command)
+        public BotState GetNext(long ChatID, Command command)
         {
-            User user = controller.GetUser(ChatID);
+            TelegramUser user = controller.GetUser(ChatID);
             StateTransition stateTransition = new(
                 currentState: (BotState)user.State,
                 command: command
@@ -73,9 +74,9 @@ namespace StateMachine
             return CurrentState;
         }
 
-        public BotState MoveNext(int ChatID, Command command)
+        public BotState MoveNext(long ChatID, Command command)
         {
-            User user = controller.GetUser(ChatID);
+            TelegramUser user = controller.GetUser(ChatID);
             StateTransition stateTransition = new(
                 currentState: (BotState)user.State,
                 command: command
@@ -84,6 +85,19 @@ namespace StateMachine
             user.State = (int)CurrentState;
             controller.UpdateUser(user);
             return CurrentState;
+        }
+
+        public static Command? ConvertStringToCommand(string? text)
+        {
+            return text switch
+            {
+                "/start" => (Command?)Command.Start,
+                "/login" => (Command?)Command.Login,
+                "/decks" => (Command?)Command.ViewDecks,
+                "/search-cards" => (Command?)Command.SearchCards,
+                null => null,
+                _ => null,
+            };
         }
     }
 }
