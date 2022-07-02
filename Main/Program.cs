@@ -20,7 +20,7 @@ namespace Main
             try
             {
                 System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
-                TelegaBot telegaBot = new(token: settings.TgSecretToken);
+                TelegaBot telegaBot = new(settings: settings);
                 telegaBot.GetUpdates();
             }
             catch (Exception ex) { Console.WriteLine(ex.Message); }

@@ -1,22 +1,36 @@
 using Anki.DAL.DTOs;
+using Dapper;
+using Npgsql;
+using TelegramAnki.Settings;
 
 namespace Anki.DAL.Managers
 {
     public class UserManager
     {
-        public static List<UserDTO> GetUsers()
+        readonly string PgConnectionString;
+
+        public UserManager(Settings settings)
         {
-            return new List<UserDTO>{
-                new UserDTO { ChatID = 1, Cookie = "", State = 0 },
+            PgConnectionString = settings.PgConnectionString;
+        }
+
+        public List<UserDTO> GetUsers()
+        {
+            using (var connection = new NpgsqlConnection(PgConnectionString))
+            {
+                return connection.Query<UserDTO>(
+                    "SELECT * FROM user",
+                    commandType: System.Data.CommandType.Text
+                ).ToList();
             };
         }
 
-        public static UserDTO GetUser(int ChatID)
+        public UserDTO GetUser(int ChatID)
         {
             return new() { ChatID = ChatID, Cookie = "", State = 0 };
         }
 
-        public static void UpdateUser(UserDTO user)
+        public void UpdateUser(UserDTO user)
         {
             // todo:
         }

@@ -1,7 +1,9 @@
-﻿using Telegram.Bot;
+﻿using Anki.BLL;
+using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
+using TelegramAnki.Settings;
 
 namespace Anki.IL
 {
@@ -13,11 +15,13 @@ namespace Anki.IL
         private const string text4 = "Easy";
         private readonly string _token;
         readonly TelegramBotClient _client;
+        readonly Controller _controller;
 
-        public TelegaBot(string token)
+        public TelegaBot(Settings settings)
         {
-            this._token = token;
-            this._client = new TelegramBotClient(_token);
+            _token = settings.TgSecretToken;
+            _client = new TelegramBotClient(_token);
+            _controller = new Controller(settings: settings);
         }
         public void GetUpdates()
         {
@@ -29,6 +33,7 @@ namespace Anki.IL
                 {
                     try
                     {
+                        _controller.GetUsers();
                         var updates = _client.GetUpdatesAsync(offset).Result;
                         if (updates != null && updates.Length > 0)
                         {

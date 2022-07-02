@@ -64,7 +64,7 @@ namespace StateMachine
         }
         public BotState GetNext(int ChatID, Command command)
         {
-            UserDTO user = UserManager.GetUser(ChatID);
+            User user = controller.GetUser(ChatID);
             StateTransition stateTransition = new(
                 currentState: (BotState)user.State,
                 command: command
