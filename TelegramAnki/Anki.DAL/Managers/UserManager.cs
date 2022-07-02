@@ -19,7 +19,7 @@ namespace Anki.DAL.Managers
             using (var connection = new NpgsqlConnection(PgConnectionString))
             {
                 return connection.Query<UserDTO>(
-                    "SELECT * FROM user",
+                    "SELECT * FROM \"User\"",
                     commandType: System.Data.CommandType.Text
                 ).ToList();
             };

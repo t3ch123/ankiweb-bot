@@ -1,5 +1,5 @@
-﻿CREATE TABLE [dbo].[User] (
-    [ChatId] INT NOT NULL PRIMARY KEY,
-    [Cookie] NCHAR(255) NULL,
-    [State] INT NULL
+﻿CREATE TABLE IF NOT EXISTS "Users" (
+    ChatId serial PRIMARY KEY,
+    Cookie VARCHAR(255) NOT NULL,
+    State INT NOT NULL
 )

@@ -33,7 +33,13 @@ namespace Anki.IL
                 {
                     try
                     {
-                        _controller.GetUsers();
+                        List<TelegramAnki.User.User> users = _controller.GetUsers();
+
+                        foreach (TelegramAnki.User.User user in users)
+                        {
+                            Console.WriteLine("Cookie {0}", user.Cookie);
+                        }
+
                         var updates = _client.GetUpdatesAsync(offset).Result;
                         if (updates != null && updates.Length > 0)
                         {
