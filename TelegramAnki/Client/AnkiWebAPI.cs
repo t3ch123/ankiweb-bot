@@ -1,4 +1,5 @@
 
+using System.Net;
 using System.Text.RegularExpressions;
 
 namespace AnkiWeb
@@ -22,8 +23,35 @@ namespace AnkiWeb
             }
         }
 
-        private static readonly HttpClient _client = new();
+        private readonly HttpClient _client;
+        private readonly HttpClientHandler _handler;
 
+
+        public AnkiWebAPI()
+        {
+            _handler = new HttpClientHandler
+            {
+                CookieContainer = new CookieContainer()
+            };
+            _client = new HttpClient(handler: _handler);
+        }
+
+        private static Cookie CreateCookie(string cookieString)
+        {
+            Console.WriteLine("Cookie string: {0}", cookieString);
+            var properties = cookieString.Split(';', StringSplitOptions.TrimEntries).ToList();
+            Console.WriteLine("Properties: {0}", properties);
+            var name = properties[0].Split("=")[0];
+            var value = properties[0].Split("=")[1];
+            var path = properties[2].Replace("path=", "");
+            var cookie = new Cookie(name, value, path)
+            {
+                Secure = properties.Contains("secure"),
+                HttpOnly = properties.Contains("httponly"),
+                // Expires = DateTime.Parse(properties[1].Replace("expires=", ""))
+            };
+            return cookie;
+        }
 
         public async Task<(string, string)> Login(string username, string password)
         {
@@ -41,8 +69,8 @@ namespace AnkiWeb
             Task<string> stringContentsTask = response.Content.ReadAsStringAsync();
             string? responseContent = stringContentsTask.Result;
 
-            Console.WriteLine("Response: " + response);
-            Console.WriteLine("Response content: " + responseContent);
+            // Console.WriteLine("Response: " + response);
+            // Console.WriteLine("Response content: " + responseContent);
 
             if (responseContent == null)
             {
@@ -58,15 +86,39 @@ namespace AnkiWeb
             }
             csrfToken = m.Groups[1].Value;
 
-            // var content = new FormUrlEncodedContent(
-            //     new Dictionary<string, string> {
-            //         {"username", username},
-            //         {"password", password},
-            //     }
-            // );
-            // response = await _client.PostAsync(loginUrl, content);
+            var content = new FormUrlEncodedContent(
+                new Dictionary<string, string> {
+                    {"username", username},
+                    {"password", password},
+                    {"csrf_token", csrfToken},
+                    {"submitted", "1"},
+                }
+            );
+            _handler.CookieContainer.Add(
+                new Cookie(name: "ankiweb", value: "login")
+            );
+            response = await _client.PostAsync(loginUrl, content);
 
-            sessionToken = "";
+            stringContentsTask = response.Content.ReadAsStringAsync();
+            responseContent = stringContentsTask.Result;
+
+            Console.WriteLine("LoginUrl {0}", loginUrl);
+            Console.WriteLine("Response: " + response);
+            Console.WriteLine("Response content: " + responseContent);
+
+            response.Headers.TryGetValues("Set-Cookie", out var cookiesHeader);
+
+            if (cookiesHeader != null)
+            {
+                List<Cookie> cookies = cookiesHeader.Select(cookieString => CreateCookie(cookieString)).ToList();
+                Cookie? sessionId = cookies.Where(x => x.Name == "ankiweb").First();
+                sessionToken = sessionId.Value;
+            }
+            else
+            {
+                sessionToken = "";
+            }
+
             return (csrfToken, sessionToken);
         }
     }
