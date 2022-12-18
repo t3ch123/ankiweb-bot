@@ -1,6 +1,4 @@
 using Anki.BLL;
-using Anki.DAL.DTOs;
-using Anki.DAL.Managers;
 using TelegramAnki.User;
 
 namespace StateMachine

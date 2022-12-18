@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace AnkiWeb
 {
-    class User
+    public class User
     {
         [JsonPropertyName("login")]
         public string Login;

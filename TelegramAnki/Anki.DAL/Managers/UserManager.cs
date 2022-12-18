@@ -63,8 +63,19 @@ namespace Anki.DAL.Managers
             using (var connection = new NpgsqlConnection(PgConnectionString))
             {
                 connection.Execute(
-                    "INSERT INTO \"User\" VALUES (@ChatId, @Cookie, @State)",
-                    param: new { ChatId = user.ChatID, Cookie = user.Cookie, State = user.State }
+                    @"
+                        INSERT INTO ""User""
+                            (ChatId, Cookie, State, CsrfToken)
+                        VALUES
+                            (@ChatID, @Cookie, @State, @CsrfToken)
+                    ",
+                    param: new
+                    {
+                        ChatID = user.ChatID,
+                        Cookie = user.Cookie,
+                        State = user.State,
+                        CsrfToken = user.CsrfToken
+                    }
                 );
             }
         }

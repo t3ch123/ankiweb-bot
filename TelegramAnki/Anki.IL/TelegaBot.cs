@@ -27,7 +27,7 @@ namespace Anki.IL
             _controller = new Controller(settings: settings);
             _bot = new Bot(controller: _controller);
         }
-        public void GetUpdates()
+        public async void GetUpdates()
         {
             var me = _client.GetMeAsync().Result;
             if (me != null && !string.IsNullOrEmpty(me.Username))
@@ -44,7 +44,7 @@ namespace Anki.IL
                             {
                                 try
                                 {
-                                    ProcessUpdate(update);
+                                    ProcessUpdate(update).Wait();
                                 }
                                 catch (Exception ex) { Console.WriteLine("GetUpdates: {0}", ex.Message); }
                                 finally
@@ -61,7 +61,7 @@ namespace Anki.IL
                 }
             }
         }
-        private void ProcessUpdate(Update update)
+        private async Task ProcessUpdate(Update update)
         {
             switch (update.Type)
             {
@@ -82,35 +82,45 @@ namespace Anki.IL
                         user = new()
                         {
                             ChatID = message.Chat.Id,
-                            Cookie = "",
                             State = (int)BotState.Initial
                         };
+
+                        Console.WriteLine(
+                            "ProcessUpdate: Create an entry for user {0}, state = {1}",
+                            user.ChatID,
+                            ((BotState)user.State).ToString()
+                        );
                         _controller.CreateUser(user);
                     }
 
                     user = _controller.GetUser(ChatID: message.Chat.Id);
+                    bool loginSuccessful = await user.Login();
+
+                    Console.WriteLine("loginSuccessful: {0}", loginSuccessful);
+
 
                     switch (Bot.ConvertStringToCommand(message.Text))
                     {
                         case Command.Start:
                             Console.WriteLine("ProcessUpdate: next state {0}", _bot.GetNext(user.ChatID, Command.Start));
                             _bot.MoveNext(user.ChatID, Command.Start);
-                            _client.SendTextMessageAsync(message.Chat.Id, "Received Start command", replyMarkup: Buttons);
+                            await _client.SendTextMessageAsync(message.Chat.Id, "Received Start command", replyMarkup: Buttons);
                             break;
                         case Command.Login:
+                            Console.WriteLine("ProcessUpdate: next state {0}", _bot.GetNext(user.ChatID, Command.Start));
                             _bot.MoveNext(user.ChatID, Command.Login);
-                            _client.SendTextMessageAsync(message.Chat.Id, "Received Login command", replyMarkup: Buttons);
+                            await _client.SendTextMessageAsync(message.Chat.Id, "Received Login command", replyMarkup: Buttons);
                             break;
                         case Command.ViewDecks:
                             _bot.MoveNext(user.ChatID, Command.ViewDecks);
-                            _client.SendTextMessageAsync(message.Chat.Id, "Received ViewDecks command", replyMarkup: Buttons);
+                            await _client.SendTextMessageAsync(message.Chat.Id, "Received ViewDecks command", replyMarkup: Buttons);
                             break;
                         case Command.SearchCards:
                             _bot.MoveNext(user.ChatID, Command.SearchCards);
-                            _client.SendTextMessageAsync(message.Chat.Id, "Received SearchCards command", replyMarkup: Buttons);
+                            await _client.SendTextMessageAsync(message.Chat.Id, "Received SearchCards command", replyMarkup: Buttons);
                             break;
                         default:
-                            _client.SendTextMessageAsync(message.Chat.Id, "Received Unknown command", replyMarkup: Buttons);
+                            await _client.SendTextMessageAsync(message.Chat.Id, "Received Unknown command", replyMarkup: Buttons);
                             break;
                     }
                     break;

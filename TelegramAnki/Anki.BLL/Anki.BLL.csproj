@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Anki.DAL\Anki.DAL.csproj" />
     <ProjectReference Include="..\Settings\Settings.csproj" />
+    <ProjectReference Include="..\Client\AnkiWeb.csproj" />
   </ItemGroup>
 
   <ItemGroup>
