@@ -31,7 +31,15 @@ namespace AnkiWeb
         {
             _handler = new HttpClientHandler
             {
-                CookieContainer = new CookieContainer()
+                CookieContainer = new CookieContainer(),
+                ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator,
+                AllowAutoRedirect = false,
+                Proxy = new WebProxy
+                {
+                    Address = new Uri($"http://localhost:1337"),
+                    BypassProxyOnLocal = false,
+                    UseDefaultCredentials = false,
+                }
             };
             _client = new HttpClient(handler: _handler);
         }
@@ -88,23 +96,37 @@ namespace AnkiWeb
 
             var content = new FormUrlEncodedContent(
                 new Dictionary<string, string> {
-                    {"username", username},
-                    {"password", password},
+                    {"username", "lyamets.misha@gmail.com"},
+                    {"password", ""},
                     {"csrf_token", csrfToken},
                     {"submitted", "1"},
                 }
             );
             _handler.CookieContainer.Add(
                 new Cookie(name: "ankiweb", value: "login")
+                {
+                    Domain = "ankiweb.net",
+                    Path = "/",
+                }
             );
             response = await _client.PostAsync(loginUrl, content);
 
             stringContentsTask = response.Content.ReadAsStringAsync();
             responseContent = stringContentsTask.Result;
 
+            if (response.StatusCode != HttpStatusCode.Redirect)
+            {
+                throw new Exception("Unexpected status code on login: " + response.StatusCode.ToString());
+            }
+
             Console.WriteLine("LoginUrl {0}", loginUrl);
             Console.WriteLine("Response: " + response);
             Console.WriteLine("Response content: " + responseContent);
+
+            foreach (var item in _handler.CookieContainer.GetAllCookies())
+            {
+                Console.WriteLine("Cookie: " + item.ToString());
+            }
 
             response.Headers.TryGetValues("Set-Cookie", out var cookiesHeader);
 
