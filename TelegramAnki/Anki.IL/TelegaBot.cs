@@ -35,27 +35,29 @@ namespace Anki.IL
                 int offset = 0;
                 while (true)
                 {
-                    try
+                    var updates = _client.GetUpdatesAsync(offset).Result;
+                    if (updates != null && updates.Length > 0)
                     {
-                        var updates = _client.GetUpdatesAsync(offset).Result;
-                        if (updates != null && updates.Length > 0)
+                        foreach (var update in updates)
                         {
-                            foreach (var update in updates)
+                            try
                             {
-                                try
+                                ProcessUpdate(update).Wait();
+                            }
+                            catch (AggregateException aex)
+                            {
+                                aex.Handle(ex =>
                                 {
-                                    ProcessUpdate(update).Wait();
-                                }
-                                catch (Exception ex) { Console.WriteLine("GetUpdates: {0}", ex.Message); }
-                                finally
-                                {
-                                    offset = update.Id + 1;
-
-                                }
+                                    Console.WriteLine("GetUpdates: {0} {1}", ex.GetType().Name, ex.Message);
+                                    return true;
+                                });
+                            }
+                            finally
+                            {
+                                offset = update.Id + 1;
                             }
                         }
                     }
-                    catch (Exception ex) { Console.WriteLine("GetUpdates: {0}", ex.Message); }
 
                     Thread.Sleep(1000);
                 }

@@ -16,7 +16,7 @@ namespace AnkiWeb
 
             public const string
                 Domain = "ankiweb.net";
-
+    
             public static string GetUrl(string endpoint)
             {
                 return string.Format("https://{0}/{1}", Domain, endpoint);
@@ -116,7 +116,7 @@ namespace AnkiWeb
 
             if (response.StatusCode != HttpStatusCode.Redirect)
             {
-                throw new Exception("Unexpected status code on login: " + response.StatusCode.ToString());
+                throw new LoginFailure("Unexpected status code on login: " + response.StatusCode.ToString());
             }
 
             Console.WriteLine("LoginUrl {0}", loginUrl);
