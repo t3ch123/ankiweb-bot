@@ -20,10 +20,21 @@ namespace TelegramAnki.User
 
         public async Task<(string, string)> Login(string username, string password)
         {
+
+            if (await IsLoggedIn())
+            {
+                return (CsrfToken, Cookie);
+            }
+
             return await _ankiweb.Login(
-                username: username,
-                password: password
-            );
+                            username: username,
+                            password: password
+                        );
+        }
+
+        public async Task<bool> IsLoggedIn()
+        {
+            return await _ankiweb.IsLoggedIn(cookie: Cookie);
         }
     }
 }

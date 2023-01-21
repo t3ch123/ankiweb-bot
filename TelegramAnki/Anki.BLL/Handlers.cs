@@ -19,10 +19,15 @@ namespace Anki.BLL
 
         private async Task Login(TelegramUser user)
         {
-            Console.WriteLine("Login: Login has been called");
-
             string username, password;
             string csrfToken, sessionToken;
+
+            if (await user.IsLoggedIn())
+            {
+                /* If user is already logged in, we don't need to ask for credentials */
+                Console.WriteLine("Login: User {0} is already logged in", user.ChatID);
+                return;
+            }
 
             (username, password) = await AskForCredentials(user);
             (csrfToken, sessionToken) = await user.Login(username, password);
@@ -49,9 +54,6 @@ namespace Anki.BLL
             {
                 case Command.Login:
                     return Login(user);
-
-                case Command.SearchCards:
-                    return AskForCredentials(user);
 
                 default:
                     throw new NotImplementedException();

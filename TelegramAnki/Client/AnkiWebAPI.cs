@@ -12,7 +12,7 @@ namespace AnkiWeb
         {
             public const string
                 Login = "account/login",
-                Decks = "";
+                Decks = "decks/";
 
             public const string
                 Domain = "ankiweb.net";
@@ -25,13 +25,15 @@ namespace AnkiWeb
 
         private readonly HttpClient _client;
         private readonly HttpClientHandler _handler;
+        private readonly CookieContainer _cookieContainer;
 
 
         public AnkiWebAPI()
         {
+            _cookieContainer = new CookieContainer();
             _handler = new HttpClientHandler
             {
-                CookieContainer = new CookieContainer(),
+                CookieContainer = _cookieContainer,
                 ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator,
                 AllowAutoRedirect = false,
                 Proxy = new WebProxy
@@ -59,6 +61,24 @@ namespace AnkiWeb
                 // Expires = DateTime.Parse(properties[1].Replace("expires=", ""))
             };
             return cookie;
+        }
+
+        public async Task<bool> IsLoggedIn(string cookie)
+        {
+            string decksUrl = Endpoints.GetUrl(Endpoints.Decks);
+
+            _cookieContainer.Add(
+                new Cookie(name: "ankiweb", value: cookie)
+                {
+                    Domain = "ankiweb.net",
+                    Path = "/",
+                }
+            );
+
+            HttpResponseMessage response = await _client.GetAsync(decksUrl);
+
+            /* If not redirected to the /about page, we're logged in */
+            return response.StatusCode != HttpStatusCode.Found;
         }
 
         public async Task<(string, string)> Login(string username, string password)
