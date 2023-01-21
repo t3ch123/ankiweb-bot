@@ -96,8 +96,8 @@ namespace AnkiWeb
 
             var content = new FormUrlEncodedContent(
                 new Dictionary<string, string> {
-                    {"username", "lyamets.misha@gmail.com"},
-                    {"password", ""},
+                    {"username", username},
+                    {"password", password},
                     {"csrf_token", csrfToken},
                     {"submitted", "1"},
                 }
