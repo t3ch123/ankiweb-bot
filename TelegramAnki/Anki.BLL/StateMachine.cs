@@ -15,33 +15,36 @@ namespace StateMachine
         Start,
         Login,
         ViewDecks,
-        SearchCards
+        SearchCards,
+        Defunct
+    }
+
+
+    public class StateTransition
+    {
+        public readonly Command Command;
+        public BotState CurrentState { get; private set; }
+
+        public StateTransition(BotState currentState, Command command)
+        {
+            CurrentState = currentState;
+            Command = command;
+        }
+
+        public override int GetHashCode() => 17 + 31 * CurrentState.GetHashCode() + 31 * Command.GetHashCode();
+
+        public override bool Equals(Object? obj)
+        {
+            if (obj is StateTransition other)
+            {
+                return CurrentState == other.CurrentState && Command == other.Command;
+            }
+            return false;
+        }
     }
 
     public class Bot
     {
-        class StateTransition
-        {
-            readonly BotState CurrentState;
-            readonly Command Command;
-
-            public StateTransition(BotState currentState, Command command)
-            {
-                CurrentState = currentState;
-                Command = command;
-            }
-
-            public override int GetHashCode() => 17 + 31 * CurrentState.GetHashCode() + 31 * Command.GetHashCode();
-
-            public override bool Equals(Object? obj)
-            {
-                if (obj is StateTransition other)
-                {
-                    return CurrentState == other.CurrentState && Command == other.Command;
-                }
-                return false;
-            }
-        }
 
         private readonly Dictionary<StateTransition, BotState> transitions;
         public BotState CurrentState { get; private set; }
@@ -68,6 +71,10 @@ namespace StateMachine
                 currentState: (BotState)user.State,
                 command: command
             );
+
+            if (!transitions.ContainsKey(stateTransition))
+                throw new InvalidTransition(stateTransition);
+
             CurrentState = transitions[stateTransition];
             return CurrentState;
         }
@@ -79,22 +86,27 @@ namespace StateMachine
                 currentState: (BotState)user.State,
                 command: command
             );
+
+            if (!transitions.ContainsKey(stateTransition))
+                throw new InvalidTransition(stateTransition);
+
             CurrentState = transitions[stateTransition];
+
             user.State = (int)CurrentState;
             controller.UpdateUser(user);
             return CurrentState;
         }
 
-        public static Command? ConvertStringToCommand(string? text)
+        public static Command ConvertStringToCommand(string? text)
         {
             return text switch
             {
-                "/start" => (Command?)Command.Start,
-                "/login" => (Command?)Command.Login,
-                "/decks" => (Command?)Command.ViewDecks,
-                "/search-cards" => (Command?)Command.SearchCards,
-                null => null,
-                _ => null,
+                "/start" => Command.Start,
+                "/login" => Command.Login,
+                "/decks" => Command.ViewDecks,
+                "/search-cards" => Command.SearchCards,
+                null => Command.Defunct,
+                _ => Command.Defunct,
             };
         }
     }

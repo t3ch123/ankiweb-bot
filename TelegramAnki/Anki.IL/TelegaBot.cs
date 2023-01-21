@@ -15,9 +15,12 @@ namespace Anki.IL
         private const string text2 = "Hard";
         private const string text3 = "Good";
         private const string text4 = "Easy";
+
+
         private readonly string _token;
         readonly TelegramBotClient _client;
         readonly Controller _controller;
+        readonly ICommandsRepository _handler;
         readonly Bot _bot;
 
         public TelegaBot(Settings settings)
@@ -25,6 +28,7 @@ namespace Anki.IL
             _token = settings.TgSecretToken;
             _client = new TelegramBotClient(_token);
             _controller = new Controller(settings: settings);
+            _handler = new CommandsRepository(controller: _controller);
             _bot = new Bot(controller: _controller);
         }
         public async void GetUpdates()
@@ -96,22 +100,21 @@ namespace Anki.IL
                     }
 
                     user = _controller.GetUser(ChatID: message.Chat.Id);
-                    bool loginSuccessful = await user.Login();
 
-                    Console.WriteLine("loginSuccessful: {0}", loginSuccessful);
-
-
-                    switch (Bot.ConvertStringToCommand(message.Text))
+                    Command cmd = Bot.ConvertStringToCommand(message.Text);
+                    switch (cmd)
                     {
                         case Command.Start:
-                            Console.WriteLine("ProcessUpdate: next state {0}", _bot.GetNext(user.ChatID, Command.Start));
-                            _bot.MoveNext(user.ChatID, Command.Start);
+                            Console.WriteLine("ProcessUpdate: next state {0}", _bot.GetNext(user.ChatID, cmd));
+                            _bot.MoveNext(user.ChatID, cmd);
                             await _client.SendTextMessageAsync(message.Chat.Id, "Received Start command", replyMarkup: Buttons);
                             break;
                         case Command.Login:
-                            Console.WriteLine("ProcessUpdate: next state {0}", _bot.GetNext(user.ChatID, Command.Start));
-                            _bot.MoveNext(user.ChatID, Command.Login);
                             await _client.SendTextMessageAsync(message.Chat.Id, "Received Login command", replyMarkup: Buttons);
+                            Console.WriteLine("ProcessUpdate: next state {0}", _bot.GetNext(user.ChatID, cmd));
+
+                            _handler.ExecuteCommand(cmd: cmd, user: user).Wait();
+                            _bot.MoveNext(user.ChatID, cmd);
                             break;
                         case Command.ViewDecks:
                             _bot.MoveNext(user.ChatID, Command.ViewDecks);

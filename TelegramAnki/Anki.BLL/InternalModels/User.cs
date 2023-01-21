@@ -1,5 +1,6 @@
 
 using AnkiWeb;
+using Anki.BLL;
 
 namespace TelegramAnki.User
 {
@@ -17,19 +18,12 @@ namespace TelegramAnki.User
             _ankiweb = new();
         }
 
-        public async Task<bool> Login()
+        public async Task<(string, string)> Login(string username, string password)
         {
-            string csrfToken, sessionToken;
-
-            (csrfToken, sessionToken) = await _ankiweb.Login(
-                username: "",
-                password: ""
+            return await _ankiweb.Login(
+                username: username,
+                password: password
             );
-
-            Console.WriteLine("csrfToken   : {0}", csrfToken);
-            Console.WriteLine("sessionToken: {0}", sessionToken);
-
-            return csrfToken != "" && sessionToken != "";
         }
     }
 }

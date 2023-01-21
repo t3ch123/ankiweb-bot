@@ -16,7 +16,7 @@ namespace AnkiWeb
 
             public const string
                 Domain = "ankiweb.net";
-    
+
             public static string GetUrl(string endpoint)
             {
                 return string.Format("https://{0}/{1}", Domain, endpoint);

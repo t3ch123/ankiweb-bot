@@ -52,8 +52,8 @@ namespace Anki.DAL.Managers
             using (var connection = new NpgsqlConnection(PgConnectionString))
             {
                 connection.Execute(
-                    "UPDATE \"User\" SET Cookie = @Cookie, State = @State WHERE ChatId = @ChatId",
-                    param: new { ChatId = user.ChatID, Cookie = user.Cookie, State = user.State }
+                    "UPDATE \"User\" SET Cookie = @Cookie, CsrfToken = @CsrfToken, State = @State WHERE ChatId = @ChatId",
+                    param: new { ChatId = user.ChatID, Cookie = user.Cookie, CsrfToken = user.CsrfToken, State = user.State }
                 );
             }
         }
