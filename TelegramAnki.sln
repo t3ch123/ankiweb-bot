@@ -3,7 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32407.343
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramAnki", "TelegramAnki\TelegramAnki.csproj", "{DA9483E3-16B8-49E5-A277-294FF2199D25}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TelegramAnki", "TelegramAnki", "{CAA59BB8-9F35-4864-8165-37E291E0649F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anki.BLL", "TelegramAnki\Anki.BLL\Anki.BLL.csproj", "{6180CEE4-9BA0-450E-8909-8DA75F8D57DC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anki.DAL", "TelegramAnki\Anki.DAL\Anki.DAL.csproj", "{A6E2C304-A315-46EF-AB37-A43818D06CC6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anki.IL", "TelegramAnki\Anki.IL\Anki.IL.csproj", "{2818F2CE-81C6-4C0B-9567-FF6DED30FE29}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Main", "Main\Main.csproj", "{AF218A3C-B6A8-4968-8CA5-0185D5D4F293}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Settings", "TelegramAnki\Settings\Settings.csproj", "{6C3C9F6E-ADE8-4659-9C6C-049D31278151}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,13 +21,41 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DA9483E3-16B8-49E5-A277-294FF2199D25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA9483E3-16B8-49E5-A277-294FF2199D25}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA9483E3-16B8-49E5-A277-294FF2199D25}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA9483E3-16B8-49E5-A277-294FF2199D25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6180CEE4-9BA0-450E-8909-8DA75F8D57DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6180CEE4-9BA0-450E-8909-8DA75F8D57DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6180CEE4-9BA0-450E-8909-8DA75F8D57DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6180CEE4-9BA0-450E-8909-8DA75F8D57DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6E2C304-A315-46EF-AB37-A43818D06CC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6E2C304-A315-46EF-AB37-A43818D06CC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6E2C304-A315-46EF-AB37-A43818D06CC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6E2C304-A315-46EF-AB37-A43818D06CC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2818F2CE-81C6-4C0B-9567-FF6DED30FE29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2818F2CE-81C6-4C0B-9567-FF6DED30FE29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2818F2CE-81C6-4C0B-9567-FF6DED30FE29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2818F2CE-81C6-4C0B-9567-FF6DED30FE29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF218A3C-B6A8-4968-8CA5-0185D5D4F293}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF218A3C-B6A8-4968-8CA5-0185D5D4F293}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF218A3C-B6A8-4968-8CA5-0185D5D4F293}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF218A3C-B6A8-4968-8CA5-0185D5D4F293}.Release|Any CPU.Build.0 = Release|Any CPU
+		{456239B5-D8B2-4369-8C4E-6A5D733C641B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{456239B5-D8B2-4369-8C4E-6A5D733C641B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{456239B5-D8B2-4369-8C4E-6A5D733C641B}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{456239B5-D8B2-4369-8C4E-6A5D733C641B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{456239B5-D8B2-4369-8C4E-6A5D733C641B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{456239B5-D8B2-4369-8C4E-6A5D733C641B}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{6C3C9F6E-ADE8-4659-9C6C-049D31278151}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C3C9F6E-ADE8-4659-9C6C-049D31278151}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C3C9F6E-ADE8-4659-9C6C-049D31278151}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C3C9F6E-ADE8-4659-9C6C-049D31278151}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6180CEE4-9BA0-450E-8909-8DA75F8D57DC} = {CAA59BB8-9F35-4864-8165-37E291E0649F}
+		{A6E2C304-A315-46EF-AB37-A43818D06CC6} = {CAA59BB8-9F35-4864-8165-37E291E0649F}
+		{2818F2CE-81C6-4C0B-9567-FF6DED30FE29} = {CAA59BB8-9F35-4864-8165-37E291E0649F}
+		{6C3C9F6E-ADE8-4659-9C6C-049D31278151} = {CAA59BB8-9F35-4864-8165-37E291E0649F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9911D043-0488-4983-A079-1AB1578FF512}

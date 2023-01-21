@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Anki.DAL\Anki.DAL.csproj" />
+    <ProjectReference Include="..\Settings\Settings.csproj" />
+    <ProjectReference Include="..\Client\AnkiWeb.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="automapper" Version="11.0.1" />
+    <PackageReference Include="dapper" Version="2.0.123" />
+  </ItemGroup>
+
+</Project>
