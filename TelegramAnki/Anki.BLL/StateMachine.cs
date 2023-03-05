@@ -101,10 +101,10 @@ namespace StateMachine
         {
             return text switch
             {
-                "/start" => Command.Start,
-                "/login" => Command.Login,
-                "/decks" => Command.ViewDecks,
-                "/search-cards" => Command.SearchCards,
+                Commands.startCmdStr        => Command.Start,
+                Commands.loginCmdStr        => Command.Login,
+                Commands.showDesksCmdStr    => Command.ViewDecks,
+                Commands.searchNoteCmdStr   => Command.SearchCards,
                 null => Command.Defunct,
                 _ => Command.Defunct,
             };

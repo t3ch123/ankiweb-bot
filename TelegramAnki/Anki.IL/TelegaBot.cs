@@ -11,12 +11,6 @@ namespace Anki.IL
 {
     public class TelegaBot
     {
-        private const string text1 = "Again";
-        private const string text2 = "Hard";
-        private const string text3 = "Good";
-        private const string text4 = "Easy";
-
-
         private readonly string _token;
         readonly TelegramBotClient _client;
         readonly Controller _controller;
@@ -102,15 +96,16 @@ namespace Anki.IL
                     user = _controller.GetUser(ChatID: message.Chat.Id);
 
                     Command cmd = Bot.ConvertStringToCommand(message.Text);
+                    System.Console.WriteLine("Receive message: {0}", message.Text);
                     switch (cmd)
                     {
                         case Command.Start:
-                            Console.WriteLine("ProcessUpdate: next state {0}", _bot.GetNext(user.ChatID, cmd));
-                            _bot.MoveNext(user.ChatID, cmd);
-                            await _client.SendTextMessageAsync(message.Chat.Id, "Received Start command", replyMarkup: Buttons);
+                            //Console.WriteLine("ProcessUpdate: next state {0}", _bot.GetNext(user.ChatID, cmd));
+                            //_bot.MoveNext(user.ChatID, cmd);
+                            await _client.SendTextMessageAsync(message.Chat.Id, "Received Start command", replyMarkup: LoginButtons);
                             break;
                         case Command.Login:
-                            await _client.SendTextMessageAsync(message.Chat.Id, "Received Login command", replyMarkup: Buttons);
+                            await _client.SendTextMessageAsync(message.Chat.Id, "Received Login command", replyMarkup: StartButtons);
                             Console.WriteLine("ProcessUpdate: next state {0}", _bot.GetNext(user.ChatID, cmd));
 
                             _handler.ExecuteCommand(cmd: cmd, user: user).Wait();
@@ -118,14 +113,14 @@ namespace Anki.IL
                             break;
                         case Command.ViewDecks:
                             _bot.MoveNext(user.ChatID, Command.ViewDecks);
-                            await _client.SendTextMessageAsync(message.Chat.Id, "Received ViewDecks command", replyMarkup: Buttons);
+                            await _client.SendTextMessageAsync(message.Chat.Id, "Received ViewDecks command", replyMarkup: StartButtons);
                             break;
                         case Command.SearchCards:
                             _bot.MoveNext(user.ChatID, Command.SearchCards);
-                            await _client.SendTextMessageAsync(message.Chat.Id, "Received SearchCards command", replyMarkup: Buttons);
+                            await _client.SendTextMessageAsync(message.Chat.Id, "Received SearchCards command", replyMarkup: StartButtons);
                             break;
                         default:
-                            await _client.SendTextMessageAsync(message.Chat.Id, "Received Unknown command", replyMarkup: Buttons);
+                            await _client.SendTextMessageAsync(message.Chat.Id, "Received Unknown command", replyMarkup: StartButtons);
                             break;
                     }
                     break;
@@ -135,20 +130,58 @@ namespace Anki.IL
                     break;
             }
         }
-        private static IReplyMarkup Buttons
+        private static IReplyMarkup AnswerButtons
         {
             get
             {
                 ReplyKeyboardMarkup rkm = new(new[]
                 {
-                new[]
+                    new[]
+                    {
+                        new KeyboardButton(Commands.againAnswerStr),
+                        new KeyboardButton(Commands.hardAnswerStr),
+                        new KeyboardButton(Commands.goodAnswerStr),
+                        new KeyboardButton(Commands.easyAnswerStr),
+                    }
+                })
                 {
-                    new KeyboardButton(text1),
-                    new KeyboardButton(text2),
-                    new KeyboardButton(text3),
-                    new KeyboardButton(text4),
-                }
-            })
+                    ResizeKeyboard = true
+                };
+                return rkm;
+            }
+        }
+
+        private static IReplyMarkup StartButtons
+        {
+            get
+            {
+                ReplyKeyboardMarkup rkm = new(new[]
+                {
+                    new[]
+                    {
+                        new KeyboardButton(Commands.showDesksCmdStr),
+                        new KeyboardButton(Commands.createDeskCmdStr),
+                        new KeyboardButton(Commands.addNoteCmdStr)
+                    }
+                })
+                {
+                    ResizeKeyboard = true
+                };
+                return rkm;
+            }
+        }
+
+        private static IReplyMarkup LoginButtons
+        {
+            get
+            {
+                ReplyKeyboardMarkup rkm = new(new[]
+                {
+                    new[]
+                    {
+                        new KeyboardButton(Commands.loginCmdStr)
+                    }
+                })
                 {
                     ResizeKeyboard = true
                 };
