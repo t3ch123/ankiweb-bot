@@ -38,7 +38,7 @@ namespace AnkiWeb
                 AllowAutoRedirect = false,
                 Proxy = new WebProxy
                 {
-                    Address = new Uri($"http://localhost:1337"),
+                    //Address = new Uri($"http://localhost:1337"),
                     BypassProxyOnLocal = false,
                     UseDefaultCredentials = false,
                 }
@@ -162,6 +162,21 @@ namespace AnkiWeb
             }
 
             return (csrfToken, sessionToken);
+        }
+
+        public async Task<List<string>> GetDecks()
+        {
+            string decksUrl = Endpoints.GetUrl(Endpoints.Decks);
+            HttpResponseMessage response = await _client.GetAsync(decksUrl);
+
+            System.Console.WriteLine("GetDecks HTTP respons: {0}", response.ToString());
+
+            string responseContentString = await response.Content.ReadAsStringAsync();
+
+            System.Console.WriteLine("HTTP response content: \n\r{0}", responseContentString);
+
+            List<string> decks = new List<string>();
+            return decks;
         }
     }
 }

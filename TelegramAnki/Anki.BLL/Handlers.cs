@@ -41,6 +41,18 @@ namespace Anki.BLL
             _controller.UpdateUser(user);
         }
 
+        private async Task ViewDecks(TelegramUser user)
+        {
+            if (!await user.IsLoggedIn())
+            {
+                System.Console.WriteLine("ViewDecks: User {0} is not logged in", user.ChatID);
+                return;
+            }
+
+            System.Console.WriteLine("Handler: executing command ViewDecks");
+            await user.GetDecks();
+        }
+
         private Task<(string, string)> AskForCredentials(TelegramUser user)
         {
             return Task.FromResult(
@@ -54,6 +66,9 @@ namespace Anki.BLL
             {
                 case Command.Login:
                     return Login(user);
+
+                case Command.ViewDecks:
+                    return ViewDecks(user);
 
                 default:
                     throw new NotImplementedException();

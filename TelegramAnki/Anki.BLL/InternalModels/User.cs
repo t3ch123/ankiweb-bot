@@ -36,5 +36,10 @@ namespace TelegramAnki.User
         {
             return await _ankiweb.IsLoggedIn(cookie: Cookie);
         }
+
+        public async Task<List<string>> GetDecks()
+        {
+            return await _ankiweb.GetDecks();
+        }
     }
 }

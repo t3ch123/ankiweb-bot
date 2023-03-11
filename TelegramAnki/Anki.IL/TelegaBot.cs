@@ -91,8 +91,10 @@ namespace Anki.IL
                             ((BotState)user.State).ToString()
                         );
                         _controller.CreateUser(user);
+                    } else {
+                        System.Console.WriteLine("User already exists, chat id: {0}", message.Chat.Id);
                     }
-
+                    
                     user = _controller.GetUser(ChatID: message.Chat.Id);
 
                     Command cmd = Bot.ConvertStringToCommand(message.Text);
@@ -100,8 +102,8 @@ namespace Anki.IL
                     switch (cmd)
                     {
                         case Command.Start:
-                            //Console.WriteLine("ProcessUpdate: next state {0}", _bot.GetNext(user.ChatID, cmd));
-                            //_bot.MoveNext(user.ChatID, cmd);
+                            Console.WriteLine("ProcessUpdate: next state {0}", _bot.GetNext(user.ChatID, cmd));
+                            _bot.MoveNext(user.ChatID, cmd);
                             await _client.SendTextMessageAsync(message.Chat.Id, "Received Start command", replyMarkup: LoginButtons);
                             break;
                         case Command.Login:
@@ -114,6 +116,7 @@ namespace Anki.IL
                         case Command.ViewDecks:
                             _bot.MoveNext(user.ChatID, Command.ViewDecks);
                             await _client.SendTextMessageAsync(message.Chat.Id, "Received ViewDecks command", replyMarkup: StartButtons);
+                            _handler.ExecuteCommand(cmd: cmd, user: user).Wait();
                             break;
                         case Command.SearchCards:
                             _bot.MoveNext(user.ChatID, Command.SearchCards);
